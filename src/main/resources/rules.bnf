@@ -1,0 +1,153 @@
+<program> ::= <function> | <function> <program> | <comment> <program>
+
+; Functions
+<function> ::= <function_declaration>
+<function_declaration> ::= "fun" <function_name> <function_arguments> ":" <function_type> <code_block>
+<function_type> ::= <atomic_type> | "void"
+<function_arguments> ::= "(" <function_parameters> ")"
+<function_parameters> ::= <atomic_type> <variable_name> | <atomic_type> <variable_name> "," <function_parameters>
+<function_name> ::= <variable_name>
+
+; Code flow statements
+<control_statement> ::= <while_expression> | <for_expression> | <if_expression>
+<while_expression> ::= "while" "(" <expression> ")" <code_block>
+<for_expression> ::= "for" "(" <type> <variable_name> "=" <expression> ";" <expression> ";" <expression> ")" <code_block>
+
+<if_expression> ::= "if" "(" <expression> ")" <code_block> |
+                        <if_expression> <elseif_expression>
+<elseif_expression> ::= "elseif" "(" <expression> ")" <code_block> | <elseif_expression> <else_expression>
+<else_expression> ::= "else" <code_block>
+
+; Code scope
+<code_block> ::= "{" <statements> "}" | "{" "}"
+<statements> ::= <statement> | <statement> <statements>
+<statement> ::= <single_statement> ";" | <control_statement> | <comment>
+<single_statement> ::= <expression> |
+                        <exit_keyword> |
+                        "return" <expression> |
+                        <assignment_statement> |
+                        <variable_declaration> |
+                        <io_statement>
+
+; Statements
+<exit_keyword> ::= "return" | "break" | "continue"
+<assignment_statement> ::= <variable_name> "=" <expression> | <array_access> "=" <expression>
+
+; Input/Output
+<io_statement> ::= <input_statement> | <output_statement>
+
+<input_statement> ::= "in" ">>" <input_variable_list>
+<input_variable_list> ::= <variable_name> | <variable_name> "," <input_variable_list>
+
+<output_statement> ::= "out" "<<" <expression>
+
+; Variable declaration
+<variable_declaration> ::= <single_variable_declaration> | <multi_variable_declaration> | <array_variable_declaration>
+<single_variable_declaration> ::= <type> <variable_name> ";"
+<multi_variable_declaration> ::= <type> <multi_variable_declaration_list>
+<multi_variable_declaration_list> ::= <variable_name> "," | <variable_name> ";"
+
+<array_variable_declaration> ::= <type> "[" <expression> "]" <variable_name> ";"
+
+; Comments
+<comment> ::= <single_line_comment> | <multiline_comment>
+<single_line_comment> ::= "//" <comment_content>
+<multiline_comment> ::= "/*" <multiline_comment_content> "*/"
+
+<comment_content> ::= <comment_symbol> | <comment_symbol> <comment_content>
+<multiline_comment_content> ::= <comment_symbol> |
+                                <endl> |
+                                <endl> <multiline_comment_content> |
+                                <comment_symbol> <multiline_comment_content>
+
+; Expressions
+<expression> ::= <expression_value> |
+                    <expression_value> <expression_op> <expression_value> |
+                    <expression> <expression_op> <expression> |
+                    <expression> <increment_op> |
+                    <expression> <decrement_op> |
+                    <not_equal_op> <expression>
+
+<expression_op> ::= <value_producing_op> | <logical_op>
+
+<expression_value> ::= "(" <expression> ")" |
+                        <expression> |
+                        <variable_name> |
+                        <value_type> |
+                        <function_call> |
+                        <array_access>
+
+<function_call> ::= <variable_name> "(" <argument_list> ")" | <variable_name> "(" ")"
+<argument_list> ::= <expression> | <expression> "," <argument_list>
+
+; Arrays
+<array_access> ::= <expression> "[" <expression> "]"
+
+; Operators
+<value_producing_op> ::= <bitwise_and_op> |
+                <bitwise_or_op> |
+                <add_op> |
+                <sub_op> |
+                <mul_op> |
+                <div_op> |
+                <exponent_op>
+<logical_op> ::= <comparison_op> |
+                    <equality_op>
+
+<and_op> ::= "&&"
+<bitwise_and_op> ::= "&"
+
+<or_op> ::= "||"
+<bitwise_or_op> ::= "|"
+<add_op> ::= "+"
+<sub_op> ::= "-"
+<mul_op> ::= "*"
+<div_op> ::= "/" | "%"
+<exponent_op> ::= "^"
+
+<increment_op> ::= "++"
+<decrement_op> ::= "--"
+<not_equal_op> ::= "!"
+
+; Comparison operators
+<comparison_op> ::= ">" | "<" | ">=" | "<="
+<equality_op> ::= "==" | "!="
+
+; Names
+<variable_name> ::= <valid_word>
+<valid_word> ::= <valid_starting_variable_symbol> <valid_variable_name> | <valid_variable_name>
+<valid_variable_name> ::= <valid_variable_symbol> | <valid_variable_symbol> <valid_variable_name>
+<valid_starting_variable_symbol> ::= [a-zA-Z]
+<valid_variable_symbol> ::= [a-zA-Z0-9]
+
+; Types
+<type> ::= <atomic_type>
+
+<value_type> ::= <float> |
+                    <number> |
+                    <string> |
+                    <bool> |
+                    <char_value>
+
+<float> ::= <number> "." <number> |
+                "." <number>
+<number> ::= <digit> | <digit> <number>
+<string> ::= """ <word> """
+<word> ::= <char> | <char> <string>
+<bool> ::= "true" | "false"
+<char_value> ::= "'" <char> "''"
+
+<char> ::= [a-zA-Z] | <comment_symbol
+<digit> ::= [0-9]
+
+<atomic_type> ::= "char" | "int" | "float" | "bool" | "string" | <atomic_array_type>
+<atomic_array_type> ::= <atomic_type> "[]"
+
+; Symbols
+<comment_symbol> ::= <comment_symbol_no_quote_backslash> | """ | "\"
+
+; Unbreak the syntax coloring "
+
+<comment_symbol_no_quote_backslash> ::= <char> | <digit> | <valid_symbol_not_alphabet>
+<valid_symbol_not_alphabet> ::= "!" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "]" | "^" | "`" | "{" | "|" | "}" | "~"
+<endl> ::= "\n" | "\r\n"
